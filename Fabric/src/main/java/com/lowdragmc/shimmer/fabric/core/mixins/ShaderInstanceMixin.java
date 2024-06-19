@@ -22,7 +22,6 @@ import java.io.Reader;
 @Mixin(ShaderInstance.class)
 public abstract class ShaderInstanceMixin {
 
-    @Mutable
     @Shadow @Final private String name;
 
     @Redirect(method = "<init>",

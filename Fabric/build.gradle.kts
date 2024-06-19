@@ -28,12 +28,14 @@ dependencies {
     common(project(path = ":Common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(path = ":Common", configuration = "transformProductionFabric")) { isTransitive = false }
 
-    include(mixinExtras)
-    modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version")
+    modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
+        exclude(group = "net.fabricmc", module = "fabric-loader")
+    }
+
     include("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version")
 
     // Sodium
-    modImplementation("maven.modrinth:sodium:mc1.18.2-0.4.1") {
+    modImplementation("maven.modrinth:sodium:mc1.19.2-0.4.4") {
         exclude(group = "net.fabricmc.fabric-api")
     }
     // This is a dependency of Sodium....

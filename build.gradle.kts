@@ -1,4 +1,5 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import java.util.*
 
 plugins {
     id("architectury-plugin")
@@ -59,8 +60,7 @@ subprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-$parchment_version@zip")
         })
-        "implementation"(mixinExtras)
-        "annotationProcessor"(mixinExtras)
+        "implementation"("com.github.spotbugs:spotbugs-annotations:4.8.5")
     }
 
     extensions.getByType<BasePluginExtension>().apply {
@@ -68,7 +68,7 @@ subprojects {
     }
 
     extensions.getByType<PublishingExtension>().apply {
-        val platformName = project.name.toLowerCase()
+        val platformName = project.name.lowercase(Locale.getDefault())
         publications {
             create<MavenPublication>(name = platformName) {
                 groupId = maven_group

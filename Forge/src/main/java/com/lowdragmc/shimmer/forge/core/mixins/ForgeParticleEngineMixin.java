@@ -8,9 +8,11 @@ import com.lowdragmc.shimmer.client.postprocessing.IPostParticleType;
 import com.lowdragmc.shimmer.client.postprocessing.PostProcessing;
 import com.lowdragmc.shimmer.core.IParticleDescription;
 import com.lowdragmc.shimmer.core.IParticleEngine;
+import com.lowdragmc.shimmer.core.mixins.LightTextureAccessor;
 import com.lowdragmc.shimmer.core.mixins.ShimmerMixinPlugin;
 import com.lowdragmc.shimmer.platform.Services;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
@@ -31,6 +33,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -63,6 +66,7 @@ public abstract class ForgeParticleEngineMixin implements IParticleEngine {
     private final Map<ResourceLocation, String> PARTICLE_EFFECT = Maps.newHashMap();
 
     @Nullable
+    @Override
     public Particle createPostParticle(PostProcessing postProcessing, ParticleOptions pParticleData, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
         Particle particle = makeParticle(pParticleData, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
         if (particle != null) {
@@ -82,10 +86,27 @@ public abstract class ForgeParticleEngineMixin implements IParticleEngine {
             PostProcessing postProcessing = ((IPostParticleType) particlerendertype).getPost();
             postProcessing.getPostTarget(false).bindWrite(false);
             postProcessing.hasParticle();
+            shimmer$turnOnLightTextureIfNeeded();
         }
         return particlerendertype;
     }
 
+    /**
+     * {@link ParticleRenderType#CUSTOM} can implementation custom render logical not defined
+     * for example {@link net.minecraft.client.particle.ItemPickupParticle}
+     * where {@link net.minecraft.client.renderer.RenderType#entityShadow(ResourceLocation)} is used
+     * it will use {@link net.minecraft.client.renderer.RenderStateShard.LightmapStateShard}
+     * which will call {@link LightTexture#turnOffLightLayer()}, so we need turn on it if needed
+     */
+    @Unique
+    private void shimmer$turnOnLightTextureIfNeeded() {
+        int currentLightTextureSlotID = RenderSystem.getShaderTexture(2);
+        LightTexture lightTexture = Minecraft.getInstance().gameRenderer.lightTexture();
+        int lightTextureID = ((LightTextureAccessor) lightTexture).getLightTexture().getId();
+        if (currentLightTextureSlotID != lightTextureID) {
+            lightTexture.turnOnLightLayer();
+        }
+    }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;)V",
             at = @At(value = "INVOKE",

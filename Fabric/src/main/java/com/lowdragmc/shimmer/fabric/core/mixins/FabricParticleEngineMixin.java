@@ -51,6 +51,8 @@ public abstract class FabricParticleEngineMixin {
 			BufferBuilder bufferBuilder = tesselator.getBuilder();
 			particleRenderType.begin(bufferBuilder, this.textureManager);
 
+			lightTexture.turnOnLightLayer(); //see comments in ForgeParticleEngineMixin
+
 			PostProcessing postProcessing = particleRenderType.getPost();
 			postProcessing.getPostTarget(false).bindWrite(false);
 			postProcessing.hasParticle();
