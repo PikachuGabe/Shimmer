@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -58,10 +59,11 @@ public abstract class ParticleEngineMixin implements IParticleEngine {
 
     @Shadow @Final private Map<ParticleRenderType, Queue<Particle>> particles;
 
-    @Shadow @Final private Queue<Particle> particlesToAdd;
+    @Unique
     private final Map<ResourceLocation, String> PARTICLE_EFFECT = Maps.newHashMap();
 
     @Nullable
+    @Override
     public Particle createPostParticle(PostProcessing postProcessing, ParticleOptions pParticleData, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
         Particle particle = makeParticle(pParticleData, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
         if (particle != null) {

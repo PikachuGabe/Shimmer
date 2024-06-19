@@ -1,4 +1,5 @@
 import org.gradle.api.Project
+import java.util.*
 
 //Mod options
 const val mod_name = "Shimmer"
@@ -11,23 +12,27 @@ const val parchment_version = "1.19.3:2023.03.12"
 const val enabled_platforms = "fabric,forge"
 
 //Fabric
-const val fabric_loader_version = "0.14.19"
-const val fabric_api_version = "0.81.1+$minecraft_version"
-const val cloth_config_version = "10.0.96"
+val fabric_loader_version = "0.15.11"
+val fabric_api_version = "0.87.2+$minecraft_version"
+val cloth_config_version = "10.0.96"
 
 //Forge
-const val forge_version = "$minecraft_version-45.0.64"
-const val modernui_version = "3.6.1.117"// FIXME
+val forge_version = "$minecraft_version-45.3.0"
+val modernui_version = "3.6.1.115"
 
 //Project
-const val version_major = 0.1
-const val version_patch = 15
-const val semantics_version = "$minecraft_version-$version_major.$version_patch"
-const val maven_path = "snapshots"
-const val maven_group = "com.lowdragmc.shimmer"
+val version_major = 0.2
+val version_patch = 5
+val semantics_version = "$minecraft_version-$version_major.$version_patch"
+val maven_path = "snapshots"
+val maven_group = "com.lowdragmc.shimmer"
 
-const val mixinExtras = "com.github.LlamaLad7:MixinExtras:0.1.1"
+private val mixinExtra = "io.github.llamalad7:mixinextras"
+private val mixinExtraVersion = "0.3.6"
+val mixinExtraCommon = "$mixinExtra-common:$mixinExtraVersion"
+val mixinExtraForge = "$mixinExtra-forge:$mixinExtraVersion"
+val mixinExtraFabric = "$mixinExtra-fabric:$mixinExtraVersion"
 
 const val flywheel_version = "0.6.7-8"// FIXME
 
-val Project.archiveBaseName get() = "$mod_name-${project.name.lowercase()}"
+val Project.archiveBaseName get() = "$mod_name-${project.name.lowercase(Locale.getDefault())}"

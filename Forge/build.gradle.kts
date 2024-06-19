@@ -41,10 +41,12 @@ dependencies {
     common(project(path = ":Common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(path = ":Common", configuration = "transformProductionForge")) { isTransitive = false }
 
-    include(mixinExtras)
-    forgeRuntimeLibrary(mixinExtras)
+    annotationProcessor(mixinExtraCommon)
+    compileOnly(mixinExtraCommon)
+    include(mixinExtraForge)
+    implementation(mixinExtraForge)
 
-    modCompileOnly("curse.maven:rubidium-574856:4448053")
+    modImplementation("maven.modrinth:rubidium:0.6.4")
 
 //    modImplementation("com.jozufozu.flywheel:flywheel-forge-$minecraft_version:$flywheel_version")
 //
