@@ -140,7 +140,7 @@ public class ShimmerModClient implements ClientModInitializer, SimpleSynchronous
 
     @Override
     public ResourceLocation getFabricId() {
-        return null;
+        return new ResourceLocation("shimmer");
     }
 
     @Override
